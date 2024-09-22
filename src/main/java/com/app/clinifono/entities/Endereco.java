@@ -12,7 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "enderecos")
-public class EnderecoEntity {
+public class Endereco {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,5 +23,5 @@ public class EnderecoEntity {
     private String cidade;
 
     @ManyToOne
-    private PacienteEntity paciente;
+    private Paciente paciente;
 }
