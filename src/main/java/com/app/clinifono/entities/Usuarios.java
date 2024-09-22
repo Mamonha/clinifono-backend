@@ -1,31 +1,28 @@
 package com.app.clinifono.entities;
 
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "consultas")
-public class ConsultaEntity {
+@Table(name = "usuarios")
+public class Usuarios {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalDateTime dataAgendamento;
-    private String descricao;
-    private boolean isConfirmed;
+    private String nome;
+    private String email;
+    private String telefone;
+    private String senha;
 
-    @ManyToOne
-    private UsuariosEntity usuario;
-
-    @ManyToOne
-    private PacienteEntity paciente;
+    @OneToMany(mappedBy = "usuario")
+    private List<Consulta> consultas;
 }

@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "pacientes")
-public class PacienteEntity {
+public class Paciente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,9 +26,9 @@ public class PacienteEntity {
 
 
     @OneToMany(mappedBy = "paciente")
-    private List<EnderecoEntity> enderecos;
+    private List<Endereco> enderecos;
 
     @OneToMany(mappedBy = "paciente")
-    private List<ConsultaEntity> consultas;
+    private List<Consulta> consultas;
 
 }
