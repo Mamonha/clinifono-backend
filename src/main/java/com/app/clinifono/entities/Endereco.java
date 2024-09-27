@@ -21,7 +21,7 @@ public class Endereco {
     private String bairro;
     private String estado;
     private String cidade;
-
-    @ManyToOne
+    private String numeroDaCasa;
+    @OneToOne
     private Paciente paciente;
 }

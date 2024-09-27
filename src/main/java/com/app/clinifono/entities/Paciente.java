@@ -27,8 +27,8 @@ public class Paciente {
     private String telefone;
 
 
-    @OneToMany(mappedBy = "paciente")
-    private List<Endereco> enderecos;
+    @OneToOne(mappedBy = "paciente")
+    private Endereco enderecos;
 
     @OneToMany(mappedBy = "paciente")
     private List<Consulta> consultas;
