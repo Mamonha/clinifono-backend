@@ -1,4 +1,4 @@
-package com.app.clinifono.dto;
+package com.app.clinifono.dto.consulta;
 
 import com.app.clinifono.entities.Paciente;
 import com.app.clinifono.entities.Usuarios;

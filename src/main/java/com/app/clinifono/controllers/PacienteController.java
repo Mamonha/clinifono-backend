@@ -1,6 +1,5 @@
 package com.app.clinifono.controllers;
 
-import com.app.clinifono.dto.ResponsePacienteDto;
 import com.app.clinifono.entities.Paciente;
 import com.app.clinifono.services.PacienteService;
 import jakarta.validation.Valid;
