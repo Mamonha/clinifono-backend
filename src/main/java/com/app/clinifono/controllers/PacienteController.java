@@ -1,6 +1,10 @@
 package com.app.clinifono.controllers;
 
+import com.app.clinifono.dto.paciente.PacienteDto;
+import com.app.clinifono.dto.paciente.PacienteUpdateDto;
+import com.app.clinifono.dto.paciente.ResponsePacienteDto;
 import com.app.clinifono.entities.Paciente;
+import com.app.clinifono.mapper.PacienteMapper;
 import com.app.clinifono.services.PacienteService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,14 +21,19 @@ public class PacienteController {
     @Autowired
     private PacienteService pacienteService;
 
+    @Autowired
+    private PacienteMapper pacienteMapper;
+
     @PostMapping("/create")
-    public ResponseEntity<Paciente> create(@RequestBody Paciente paciente){
-        return new ResponseEntity<>(pacienteService.save(paciente), HttpStatus.CREATED);
+    public ResponseEntity<ResponsePacienteDto> create(@RequestBody @Valid PacienteDto dto){
+        var paciente = pacienteService.save(pacienteMapper.toEntity(dto));
+        return new ResponseEntity<>( pacienteMapper.toDto(paciente), HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Paciente> update( @PathVariable Long id, @Valid @RequestBody Paciente paciente ){
-        return new ResponseEntity<>(pacienteService.update(paciente,id), HttpStatus.OK);
+    public ResponseEntity<ResponsePacienteDto> update( @PathVariable Long id, @Valid @RequestBody PacienteUpdateDto dto ){
+        var paciente = pacienteService.update(pacienteMapper.toUpdateEntity(dto), id);
+        return new ResponseEntity<>(pacienteMapper.toDto(paciente), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
