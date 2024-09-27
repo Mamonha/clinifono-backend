@@ -7,7 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Getter
 @Setter
@@ -19,9 +21,13 @@ public class Consulta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalDateTime dataAgendamento;
+    private LocalDate dataAgendamento;
+    private LocalTime horaDeInicio;
+    private LocalTime horaDoFim;
     private String descricao;
-    private boolean isConfirmed;
+
+    @Enumerated(EnumType.STRING)
+    private Status status = Status.PENDING;
 
     @ManyToOne
     private Usuarios usuario;

@@ -1,10 +1,10 @@
 package com.app.clinifono.services;
 
+import com.app.clinifono.configuration.exceptions.EntityNotFoundException;
 import com.app.clinifono.configuration.exceptions.UniqueValueException;
 import com.app.clinifono.entities.Paciente;
 import com.app.clinifono.repositories.EnderecoRepository;
 import com.app.clinifono.repositories.PacienteRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
