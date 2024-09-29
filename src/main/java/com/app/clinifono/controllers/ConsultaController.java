@@ -30,6 +30,7 @@ public class ConsultaController {
     @PostMapping("/create")
     public ResponseEntity<ResponseConsultaDto> create(@RequestBody ConsultaDto dto){
         var consulta = consultaService.save(consultaMapper.toEntity(dto));
+        consultaService.sendConsultaToExternalService(consulta);
         return new ResponseEntity<>(consultaMapper.toDto(consulta), HttpStatus.CREATED);
     }
 
@@ -63,5 +64,4 @@ public class ConsultaController {
         return new ResponseEntity<>(consultas.stream().map(consultaMapper::toDto).collect(Collectors.toList())
                 ,HttpStatus.OK);
     }
-
 }
