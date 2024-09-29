@@ -3,19 +3,40 @@ package com.app.clinifono.services;
 import com.app.clinifono.configuration.exceptions.BusinessException;
 import com.app.clinifono.configuration.exceptions.EntityNotFoundException;
 import com.app.clinifono.entities.Consulta;
+import com.app.clinifono.entities.Paciente;
 import com.app.clinifono.repositories.ConsultaRepository;
+import com.app.clinifono.repositories.PacienteRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.http.HttpHeaders;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class ConsultaService {
 
     @Autowired
     private ConsultaRepository consultaRepository;
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+    @Autowired
+    private PacienteRepository pacienteRepository;
+
 
     @Transactional
     public Consulta save(Consulta consulta){
