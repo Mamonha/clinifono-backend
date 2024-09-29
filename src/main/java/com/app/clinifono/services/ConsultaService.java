@@ -23,7 +23,7 @@ public class ConsultaService {
         if(!consulta.getDataAgendamento().isAfter(LocalDate.now())){
             throw new BusinessException("A data é inválida");
         }
-        if(!consulta.getHoraDeInicio().isAfter(consulta.getHoraDoFim())) {
+        if(consulta.getHoraDeInicio().isAfter(consulta.getHoraDoFim())) {
             throw new BusinessException("Hora de encerramento invalida");
         }
         return consultaRepository.save(consulta);
@@ -36,7 +36,7 @@ public class ConsultaService {
         if(!consulta.getDataAgendamento().isAfter(LocalDate.now())){
             throw new BusinessException("A data é inválida");
         }
-        if(!consulta.getHoraDeInicio().isAfter(consulta.getHoraDoFim())) {
+        if(consulta.getHoraDeInicio().isAfter(consulta.getHoraDoFim())) {
             throw new BusinessException("Hora de encerramento invalida");
         }
         if (consulta.getDataAgendamento() != null){
@@ -60,12 +60,13 @@ public class ConsultaService {
     @Transactional
     public Consulta confirmarConsulta(Consulta consulta, Long id){
         var update = findById(id);
-        try {
-            update.setStatus(consulta.getStatus());
-            return consultaRepository.save(update);
-        } catch (RuntimeException ex){
+
+        if (consulta.getStatus() == null) {
             throw new BusinessException("Erro ao confirmar a consulta devido a má formatação do status");
         }
+
+        update.setStatus(consulta.getStatus());
+        return consultaRepository.save(update);
 
     }
 
