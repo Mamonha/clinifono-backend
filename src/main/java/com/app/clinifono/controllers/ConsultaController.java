@@ -6,7 +6,6 @@ import com.app.clinifono.dto.consulta.ConsultaUpdateDto;
 import com.app.clinifono.dto.consulta.ResponseConsultaDto;
 import com.app.clinifono.entities.Consulta;
 import com.app.clinifono.entities.Paciente;
-import com.app.clinifono.events.ConsultaCreatedEvent;
 import com.app.clinifono.mapper.ConsultaMapper;
 import com.app.clinifono.services.ConsultaService;
 import jakarta.validation.Valid;
