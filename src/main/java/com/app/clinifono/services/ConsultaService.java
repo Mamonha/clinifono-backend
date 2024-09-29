@@ -103,4 +103,33 @@ public class ConsultaService {
     public List<Consulta> findAll(){
         return consultaRepository.findAll();
     }
+
+    @Async
+    public void sendConsultaToExternalService(Consulta consulta) {
+        try {
+            Map<String, Object> requestBody = new HashMap<>();
+            Optional<Paciente> paciente = pacienteRepository.findById(consulta.getPaciente().getId());
+            String telefoneLimpo = paciente.get().getTelefone().replaceAll("[^\\d]", "");
+            requestBody.put("consultaId", consulta.getId());
+            requestBody.put("pacienteNome", paciente.get().getNome());
+            requestBody.put("dataAgendamento", consulta.getDataAgendamento().toString());
+            requestBody.put("horaDeInicio", consulta.getHoraDeInicio().toString());
+            requestBody.put("horaDoFim", consulta.getHoraDoFim().toString());
+            requestBody.put("descricao", consulta.getDescricao());
+            requestBody.put("telefone", paciente.get().getTelefone());
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
+            objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+            String json = objectMapper.writeValueAsString(requestBody);
+            System.out.println("JSON enviado: " + json);
+
+            String WPP_INTEGRATION_URL = "http://localhost:8000/api/consultas";
+            String response = restTemplate.postForObject(WPP_INTEGRATION_URL, requestBody, String.class);
+            System.out.println(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
