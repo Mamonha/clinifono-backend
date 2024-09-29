@@ -6,6 +6,7 @@ import com.app.clinifono.dto.consulta.ConsultaUpdateDto;
 import com.app.clinifono.dto.consulta.ResponseConsultaDto;
 import com.app.clinifono.entities.Consulta;
 import com.app.clinifono.entities.Paciente;
+import com.app.clinifono.events.ConsultaCreatedEvent;
 import com.app.clinifono.mapper.ConsultaMapper;
 import com.app.clinifono.services.ConsultaService;
 import jakarta.validation.Valid;
@@ -30,6 +31,7 @@ public class ConsultaController {
     @PostMapping("/create")
     public ResponseEntity<ResponseConsultaDto> create(@RequestBody ConsultaDto dto){
         var consulta = consultaService.save(consultaMapper.toEntity(dto));
+        consultaService.sendConsultaToExternalService(consulta);
         return new ResponseEntity<>(consultaMapper.toDto(consulta), HttpStatus.CREATED);
     }
 
@@ -63,5 +65,4 @@ public class ConsultaController {
         return new ResponseEntity<>(consultas.stream().map(consultaMapper::toDto).collect(Collectors.toList())
                 ,HttpStatus.OK);
     }
-
 }
