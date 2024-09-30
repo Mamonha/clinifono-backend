@@ -1,9 +1,6 @@
 package com.app.clinifono.controllers;
 
-import com.app.clinifono.dto.consulta.ConsultaConfirmDto;
-import com.app.clinifono.dto.consulta.ConsultaDto;
-import com.app.clinifono.dto.consulta.ConsultaUpdateDto;
-import com.app.clinifono.dto.consulta.ResponseConsultaDto;
+import com.app.clinifono.dto.consulta.*;
 import com.app.clinifono.dto.paciente.PacienteIntegrationDto;
 import com.app.clinifono.dto.usuario.UsuarioIntegrationDto;
 import com.app.clinifono.entities.Consulta;
@@ -23,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -137,5 +135,33 @@ class ConsultaControllerTest {
         assertNotNull(response.getBody());
         assertEquals(1, response.getBody().size());
         assertEquals(consultaEntity.getId(), response.getBody().get(0).id());
+    }
+
+    @Test
+    void testGetDashboard() {
+        // Arrange
+        long totalConsultas = 20L;
+        long totalConfirmed = 10L;
+        long totalPending = 5L;
+
+        // Mockando o comportamento do repositório
+        when(consultaRepository.count()).thenReturn(totalConsultas);
+        when(consultaRepository.countByStatus(Status.CONFIRMED)).thenReturn(totalConfirmed);
+        when(consultaRepository.countByStatus(Status.CANCELLED)).thenReturn(totalPending);
+        when(consultaRepository.findConsultasPorPaciente()).thenReturn(Collections.emptyList());
+        when(consultaRepository.findConsultasPorMes()).thenReturn(Collections.emptyList());
+
+        // Act
+        ResponseEntity<ConsultaDashboardDto> response = consultaController.getDashboard();
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        ConsultaDashboardDto dashboardData = response.getBody();
+        assert dashboardData != null; // Verifica se não é nulo
+        assertEquals(totalConsultas, dashboardData.totalConsultas());
+        assertEquals(totalConfirmed, dashboardData.consultasConfirmadas());
+        assertEquals(totalPending, dashboardData.consultasCanceladas());
+        assertEquals(Collections.emptyList(), dashboardData.consultasPorPaciente());
+        assertEquals(Collections.emptyList(), dashboardData.consultasPorMes());
     }
 }
