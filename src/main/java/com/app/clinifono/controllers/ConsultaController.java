@@ -1,9 +1,6 @@
 package com.app.clinifono.controllers;
 
-import com.app.clinifono.dto.consulta.ConsultaConfirmDto;
-import com.app.clinifono.dto.consulta.ConsultaDto;
-import com.app.clinifono.dto.consulta.ConsultaUpdateDto;
-import com.app.clinifono.dto.consulta.ResponseConsultaDto;
+import com.app.clinifono.dto.consulta.*;
 import com.app.clinifono.entities.Consulta;
 import com.app.clinifono.entities.Paciente;
 import com.app.clinifono.mapper.ConsultaMapper;
@@ -63,5 +60,11 @@ public class ConsultaController {
         var consultas = consultaService.findAll();
         return new ResponseEntity<>(consultas.stream().map(consultaMapper::toDto).collect(Collectors.toList())
                 ,HttpStatus.OK);
+    }
+
+    @GetMapping("/dashboard")
+    public ResponseEntity<ConsultaDashboardDto> getDashboard() {
+        ConsultaDashboardDto dashboardData = consultaService.getDashboardData();
+        return new ResponseEntity<>(dashboardData, HttpStatus.OK);
     }
 }
