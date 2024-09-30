@@ -116,7 +116,7 @@ public class ConsultaService {
             requestBody.put("horaDeInicio", consulta.getHoraDeInicio().toString());
             requestBody.put("horaDoFim", consulta.getHoraDoFim().toString());
             requestBody.put("descricao", consulta.getDescricao());
-            requestBody.put("telefone", paciente.get().getTelefone());
+            requestBody.put("telefone", telefoneLimpo);
 
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.registerModule(new JavaTimeModule());
