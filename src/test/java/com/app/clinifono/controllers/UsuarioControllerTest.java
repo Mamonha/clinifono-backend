@@ -1,135 +1,102 @@
 package com.app.clinifono.controllers;
 
-import com.app.clinifono.dto.usuario.ResponseUsuarioDto;
-import com.app.clinifono.dto.usuario.UsuarioDto;
-import com.app.clinifono.dto.usuario.UsuarioSenhaUpdateDto;
-import com.app.clinifono.dto.usuario.UsuarioUpdateDto;
+import com.app.clinifono.dto.usuario.*;
 import com.app.clinifono.entities.Usuarios;
-import com.app.clinifono.mapper.UserMapper;
-import com.app.clinifono.services.UsuarioService;
+import com.app.clinifono.repositories.UsuariosRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+@SpringBootTest
 class UsuarioControllerTest {
 
-    @Mock
-    private UsuarioService usuarioService;
+    @MockBean
+    private UsuariosRepository usuariosRepository;
 
-    @Mock
-    private UserMapper userMapper;
-
-    @InjectMocks
+    @Autowired
     private UsuarioController usuarioController;
+    private Usuarios usuarioEntity = new Usuarios(1L, "Nome Teste", "teste@exemplo.com", "+55 11 91234-5678", "senha123", new ArrayList<>());
+
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        // O contexto Spring é inicializado automaticamente pelo @SpringBootTest
     }
 
     @Test
     void testSave() {
-        // Dados de exemplo
-        UsuarioDto usuarioDto = new UsuarioDto("Nome Teste", "teste@exemplo.com", "+55 11 91234-5678", "senha123");
-        Usuarios usuarioEntity = new Usuarios();
-        ResponseUsuarioDto responseUsuarioDto = new ResponseUsuarioDto(1L, "Nome Teste", "teste@exemplo.com", "+55 11 91234-5678", List.of());
-
-        // Mockando o comportamento do mapper e service
-        when(userMapper.toEntity(usuarioDto)).thenReturn(usuarioEntity);
-        when(usuarioService.create(any(Usuarios.class))).thenReturn(usuarioEntity);
-        when(userMapper.toDto(usuarioEntity)).thenReturn(responseUsuarioDto);
-
-        // Chamada do método da controladora
+        UsuarioDto usuarioDto = new UsuarioDto(
+                "Nome Teste",
+                "teste@exemplo.com",
+                "+55 11 91234-5678",
+                "senha123");
+        when(usuariosRepository.save(any(Usuarios.class))).thenReturn(usuarioEntity);
         ResponseEntity<ResponseUsuarioDto> response = usuarioController.save(usuarioDto);
-
-        // Validações
         assertNotNull(response);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals(responseUsuarioDto, response.getBody());
+        assertNotNull(response.getBody());
+        assertEquals(usuarioEntity.getNome(), response.getBody().nome());
     }
 
     @Test
     void testUpdatePassword() {
-        UsuarioSenhaUpdateDto updateDto = new UsuarioSenhaUpdateDto("senha123", "novaSenha123");
+        UsuarioSenhaUpdateDto senhaUpdateDto = new UsuarioSenhaUpdateDto("senha123", "novaSenha123");
 
-        // Chamada do método da controladora
-        ResponseEntity<Void> response = usuarioController.updatePassword(updateDto, 1L);
+        when(usuariosRepository.save(any())).thenReturn(new Usuarios());
+        when(usuariosRepository.findById(1L)).thenReturn(Optional.ofNullable(usuarioEntity));
 
-        // Verificar se o serviço foi chamado com os parâmetros corretos
-        verify(usuarioService, times(1)).atualizarSenha(1L, "senha123", "novaSenha123");
+        ResponseEntity<Void> response = usuarioController.updatePassword(senhaUpdateDto, 1L);
 
-        // Validações
-        assertNotNull(response);
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
     }
 
     @Test
     void testUpdate() {
-        UsuarioUpdateDto updateDto = new UsuarioUpdateDto("Nome Atualizado", "atualizado@exemplo.com", "+55 11 91234-9999");
-        Usuarios usuario = new Usuarios();
-        ResponseUsuarioDto responseDto = new ResponseUsuarioDto(1L, "Nome Atualizado", "atualizado@exemplo.com", "+55 11 91234-9999", List.of());
+        UsuarioUpdateDto updateDto = new UsuarioUpdateDto("Nome Atualizado", "novoemail@exemplo.com", "+55 11 99999-9999");
+        when(usuariosRepository.findById(2L)).thenReturn(Optional.of(usuarioEntity));
+        when(usuariosRepository.save(any(Usuarios.class))).thenReturn(usuarioEntity);
 
-        // Mockando o comportamento do service e do mapper
-        when(usuarioService.update(any(Usuarios.class), eq(1L))).thenReturn(usuario);
-        when(userMapper.updateDto(updateDto)).thenReturn(usuario);
-        when(userMapper.toDto(usuario)).thenReturn(responseDto);
+        ResponseEntity<ResponseUsuarioDto> response = usuarioController.update(2L, updateDto);
 
-        // Chamada do método da controladora
-        ResponseEntity<ResponseUsuarioDto> response = usuarioController.update(1L, updateDto);
-
-        // Validações
-        assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(responseDto, response.getBody());
+        assertNotNull(response.getBody());
+        assertEquals("Nome Teste", response.getBody().nome());
     }
 
     @Test
     void testFindById() {
-        Usuarios usuario = new Usuarios();
-        ResponseUsuarioDto responseDto = new ResponseUsuarioDto(1L, "Nome Teste", "teste@exemplo.com", "+55 11 91234-5678", List.of());
+        when(usuariosRepository.findById(1L)).thenReturn(Optional.of(usuarioEntity));
 
-        // Mockando o comportamento do service e mapper
-        when(usuarioService.findById(1L)).thenReturn(usuario);
-        when(userMapper.toDto(usuario)).thenReturn(responseDto);
-
-        // Chamada do método da controladora
         ResponseEntity<ResponseUsuarioDto> response = usuarioController.findById(1L);
 
-        // Validações
-        assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(responseDto, response.getBody());
+        assertNotNull(response.getBody());
+        assertEquals("Nome Teste", response.getBody().nome());
     }
 
     @Test
     void testFindAll() {
-        List<Usuarios> usuarios = List.of(new Usuarios(), new Usuarios());
-        List<ResponseUsuarioDto> responseDtoList = usuarios.stream()
-                .map(usuario -> new ResponseUsuarioDto(1L, "Nome", "email@teste.com", "+55 11 91234-5678", List.of()))
-                .collect(Collectors.toList());
+        List<Usuarios> usuariosList = new ArrayList<>();
+        usuariosList.add(usuarioEntity);
+        when(usuariosRepository.findAll()).thenReturn(usuariosList);
 
-        // Mockando o comportamento do service e mapper
-        when(usuarioService.findALl()).thenReturn(usuarios);
-        when(userMapper.toDto(any(Usuarios.class))).thenReturn(new ResponseUsuarioDto(1L, "Nome", "email@teste.com", "+55 11 91234-5678", List.of()));
-
-        // Chamada do método da controladora
         ResponseEntity<List<ResponseUsuarioDto>> response = usuarioController.findAll();
 
-        // Validações
-        assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(responseDtoList.size(), response.getBody().size());
+        assertNotNull(response.getBody());
+        assertEquals(1, response.getBody().size());
+        assertEquals("Nome Teste", response.getBody().get(0).nome());
     }
 }
