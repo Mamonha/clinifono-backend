@@ -6,5 +6,5 @@ import java.util.List;
 
 
 
-public record ResponseUsuarioDto(Long id, String nome, String email, String telefone, List<Consulta> consultas) {
+public record ResponseUsuarioDto(Long id, String nome, String email, String telefone) {
 }

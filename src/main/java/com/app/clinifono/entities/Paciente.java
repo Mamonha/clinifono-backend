@@ -1,5 +1,6 @@
 package com.app.clinifono.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -30,6 +31,7 @@ public class Paciente {
     @OneToOne(mappedBy = "paciente", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private Endereco enderecos;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "paciente")
     private List<Consulta> consultas;
 
