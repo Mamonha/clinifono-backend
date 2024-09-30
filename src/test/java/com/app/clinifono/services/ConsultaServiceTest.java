@@ -5,6 +5,7 @@ import com.app.clinifono.dto.consulta.ConsultaDashboardDto;
 import com.app.clinifono.entities.Consulta;
 import com.app.clinifono.entities.Paciente;
 import com.app.clinifono.entities.Status;
+import com.app.clinifono.entities.Usuarios;
 import com.app.clinifono.repositories.ConsultaRepository;
 import com.app.clinifono.repositories.PacienteRepository;
 import org.junit.jupiter.api.Assertions;
@@ -49,9 +50,11 @@ public class ConsultaServiceTest {
 
     @BeforeEach
     void setUp() {
+        Usuarios usuarios= new Usuarios();
+        usuarios.setId(1L);
         paciente = new Paciente(1L, "João Silva", "12345678900", LocalDate.of(1985, 5, 20), "(11) 98765-4321", null, null);
-        consulta = new Consulta(1L, LocalDate.of(2025, 9, 25), LocalTime.of(14, 0), LocalTime.of(15, 0), "Consulta de rotina", Status.PENDING, null, paciente);
-        outraConsulta = new Consulta(2L, LocalDate.of(2025, 9, 26), LocalTime.of(16, 0), LocalTime.of(17, 0), "Consulta de retorno", Status.CONFIRMED, null, paciente);
+        consulta = new Consulta(1L, LocalDate.of(2025, 9, 25), LocalTime.of(14, 0), LocalTime.of(15, 0), "Consulta de rotina", Status.PENDING, usuarios, paciente);
+        outraConsulta = new Consulta(2L, LocalDate.of(2025, 9, 26), LocalTime.of(16, 0), LocalTime.of(17, 0), "Consulta de retorno", Status.CONFIRMED, usuarios, paciente);
         when(pacienteRepository.findById(1L)).thenReturn(Optional.of(paciente));
         when(consultaRepository.save(ArgumentMatchers.any(Consulta.class))).thenReturn(consulta);
         when(consultaRepository.findById(1L)).thenReturn(Optional.of(consulta));
