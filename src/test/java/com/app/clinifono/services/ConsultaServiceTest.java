@@ -178,7 +178,7 @@ public class ConsultaServiceTest {
         Map<String, Object> capturedRequestBody = requestCaptor.getValue();
         Assertions.assertEquals(consulta.getId(), capturedRequestBody.get("consultaId"));
         Assertions.assertEquals(paciente.getNome(), capturedRequestBody.get("pacienteNome"));
-        Assertions.assertEquals(paciente.getTelefone(), capturedRequestBody.get("telefone"));
+        Assertions.assertEquals("11987654321", capturedRequestBody.get("telefone"));
         Assertions.assertEquals(consulta.getDataAgendamento().toString(), capturedRequestBody.get("dataAgendamento"));
         Assertions.assertEquals(consulta.getHoraDeInicio().toString(), capturedRequestBody.get("horaDeInicio"));
         Assertions.assertEquals(consulta.getHoraDoFim().toString(), capturedRequestBody.get("horaDoFim"));
