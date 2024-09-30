@@ -43,13 +43,15 @@ public class PacienteController {
     }
 
     @GetMapping("/findbyid/{id}")
-    public ResponseEntity<Paciente> findById(@PathVariable Long id){
-        return new ResponseEntity<>(pacienteService.findById(id),HttpStatus.OK);
+    public ResponseEntity<ResponsePacienteDto> findById(@PathVariable Long id){
+        return new ResponseEntity<>(pacienteMapper.toDto(pacienteService.findById(id)),HttpStatus.OK);
     }
 
     @GetMapping("/findall")
-    public ResponseEntity<List<Paciente>> findall(){
-        return new ResponseEntity<>(pacienteService.findAll(),HttpStatus.OK);
+    public ResponseEntity<List<ResponsePacienteDto>> findall(){
+        List<Paciente> pacientes = pacienteService.findAll();
+
+        return new ResponseEntity<>(pacientes.stream().map(pacienteMapper::toDto).toList(),HttpStatus.OK);
     }
 
 
