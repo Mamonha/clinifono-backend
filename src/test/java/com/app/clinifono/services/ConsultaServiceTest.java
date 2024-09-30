@@ -2,21 +2,26 @@ package com.app.clinifono.services;
 
 import com.app.clinifono.configuration.exceptions.BusinessException;
 import com.app.clinifono.entities.Consulta;
+import com.app.clinifono.entities.Paciente;
 import com.app.clinifono.entities.Status;
 import com.app.clinifono.repositories.ConsultaRepository;
+import com.app.clinifono.repositories.PacienteRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @SpringBootTest
@@ -28,14 +33,22 @@ public class ConsultaServiceTest {
     @MockBean
     ConsultaRepository consultaRepository;
 
+    @MockBean
+    PacienteRepository pacienteRepository;
+
+    @MockBean
+    RestTemplate restTemplate;
+
     Consulta consulta;
     Consulta outraConsulta;
+    Paciente paciente;
 
     @BeforeEach
     void setUp() {
-        consulta = new Consulta(1L, LocalDate.of(2025, 9, 25), LocalTime.of(14, 0), LocalTime.of(15, 0), "Consulta de rotina", Status.PENDING, null, null);
-        outraConsulta = new Consulta(2L, LocalDate.of(2025, 9, 26), LocalTime.of(16, 0), LocalTime.of(17, 0), "Consulta de retorno", Status.CONFIRMED, null, null);
-
+        paciente = new Paciente(1L, "João Silva", "12345678900", LocalDate.of(1985, 5, 20), "(11) 98765-4321", null, null);
+        consulta = new Consulta(1L, LocalDate.of(2025, 9, 25), LocalTime.of(14, 0), LocalTime.of(15, 0), "Consulta de rotina", Status.PENDING, null, paciente);
+        outraConsulta = new Consulta(2L, LocalDate.of(2025, 9, 26), LocalTime.of(16, 0), LocalTime.of(17, 0), "Consulta de retorno", Status.CONFIRMED, null, paciente);
+        Mockito.when(pacienteRepository.findById(1L)).thenReturn(Optional.of(paciente));
         Mockito.when(consultaRepository.save(ArgumentMatchers.any(Consulta.class))).thenReturn(consulta);
         Mockito.when(consultaRepository.findById(1L)).thenReturn(Optional.of(consulta));
         Mockito.when(consultaRepository.findById(2L)).thenReturn(Optional.of(outraConsulta));
@@ -143,5 +156,33 @@ public class ConsultaServiceTest {
     void cenario10() {
         consultaService.delete(1L);
         Mockito.verify(consultaRepository, Mockito.times(1)).deleteById(1L);
+    }
+
+    @Test
+    @DisplayName("Teste - Enviar Consulta para Serviço Externo")
+    void cenario11() throws Exception {
+
+        String response = "Consulta enviada com sucesso!";
+        Mockito.when(restTemplate.postForObject(
+                Mockito.eq("http://localhost:8000/api/consultas"),
+                ArgumentMatchers.any(Map.class),
+                Mockito.eq(String.class))
+        ).thenReturn(response);
+
+        consultaService.sendConsultaToExternalService(consulta);
+
+        ArgumentCaptor<Map<String, Object>> requestCaptor = ArgumentCaptor.forClass(Map.class);
+        Mockito.verify(restTemplate, Mockito.times(1))
+                .postForObject(Mockito.eq("http://localhost:8000/api/consultas"), requestCaptor.capture(), Mockito.eq(String.class));
+
+        Map<String, Object> capturedRequestBody = requestCaptor.getValue();
+        Assertions.assertEquals(consulta.getId(), capturedRequestBody.get("consultaId"));
+        Assertions.assertEquals(paciente.getNome(), capturedRequestBody.get("pacienteNome"));
+        Assertions.assertEquals(paciente.getTelefone(), capturedRequestBody.get("telefone"));
+        Assertions.assertEquals(consulta.getDataAgendamento().toString(), capturedRequestBody.get("dataAgendamento"));
+        Assertions.assertEquals(consulta.getHoraDeInicio().toString(), capturedRequestBody.get("horaDeInicio"));
+        Assertions.assertEquals(consulta.getHoraDoFim().toString(), capturedRequestBody.get("horaDoFim"));
+
+        Assertions.assertEquals("Consulta enviada com sucesso!", response);
     }
 }
