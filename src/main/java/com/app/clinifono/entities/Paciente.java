@@ -27,7 +27,7 @@ public class Paciente {
     private String telefone;
 
 
-    @OneToOne(mappedBy = "paciente")
+    @OneToOne(mappedBy = "paciente", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private Endereco enderecos;
 
     @OneToMany(mappedBy = "paciente")

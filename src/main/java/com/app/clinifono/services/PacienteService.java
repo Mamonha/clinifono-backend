@@ -24,9 +24,10 @@ public class PacienteService {
     @Transactional
     public Paciente save(Paciente paciente){
         try {
-            var pacient = pacienteRepository.save(paciente);
-            pacient.setEnderecos(enderecoRepository.save(paciente.getEnderecos()));
-            return pacient;
+            if (paciente.getEnderecos() != null) {
+                paciente.getEnderecos().setPaciente(paciente);
+            }
+            return pacienteRepository.save(paciente);
         } catch (DataIntegrityViolationException ex){
             throw new UniqueValueException("Cpf já cadastrado");
         }
