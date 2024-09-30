@@ -1,6 +1,7 @@
 package com.app.clinifono.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,8 +31,10 @@ public class Consulta {
     private Status status = Status.PENDING;
 
     @ManyToOne
+    @JsonBackReference
     private Usuarios usuario;
 
     @ManyToOne
+    @JsonBackReference
     private Paciente paciente;
 }

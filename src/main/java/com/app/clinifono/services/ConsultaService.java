@@ -37,6 +37,12 @@ public class ConsultaService {
     private ConsultaRepository consultaRepository;
 
     @Autowired
+    private UsuarioService usuarioService;
+
+    @Autowired
+    private PacienteService pacienteService;
+
+    @Autowired
     private RestTemplate restTemplate;
 
     @Autowired
@@ -45,6 +51,11 @@ public class ConsultaService {
 
     @Transactional
     public Consulta save(Consulta consulta){
+
+        var user = usuarioService.findById(consulta.getUsuario().getId());
+        var paciente = pacienteService.findById(consulta.getPaciente().getId());
+        consulta.setUsuario(user);
+        consulta.setPaciente(paciente);
 
         if(!consulta.getDataAgendamento().isAfter(LocalDate.now())){
             throw new BusinessException("A data é inválida");

@@ -1,5 +1,7 @@
 package com.app.clinifono.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,6 +27,7 @@ public class Usuarios {
     private String telefone;
     private String senha;
 
-    @OneToMany(mappedBy = "usuario")
+    @JsonManagedReference
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
     private List<Consulta> consultas;
 }
