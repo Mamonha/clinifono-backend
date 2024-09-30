@@ -22,6 +22,8 @@ public class Endereco {
     private String estado;
     private String cidade;
     private String numeroDaCasa;
+
     @OneToOne
+    @JoinColumn(name = "paciente_id")
     private Paciente paciente;
 }

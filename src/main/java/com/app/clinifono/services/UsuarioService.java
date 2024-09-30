@@ -28,17 +28,17 @@ public class UsuarioService {
     }
 
     @Transactional
-    public Usuarios update(Usuarios usuariosEntity, long id){
+    public Usuarios update(Usuarios usuariosEntity, Long id){
         try {
             var user = findById(id);
 
-            if (usuariosEntity.getNome().equals(user.getNome()) && !usuariosEntity.getNome().isBlank()){
+            if (!usuariosEntity.getNome().equals(user.getNome()) && !usuariosEntity.getNome().isBlank()){
                 user.setNome(usuariosEntity.getNome());
             }
-            if (usuariosEntity.getEmail().equals(user.getEmail()) && !usuariosEntity.getEmail().isBlank()){
+            if (!usuariosEntity.getEmail().equals(user.getEmail()) && !usuariosEntity.getEmail().isBlank()){
                 user.setEmail(usuariosEntity.getEmail());
             }
-            if (usuariosEntity.getTelefone().equals(user.getTelefone()) && !usuariosEntity.getTelefone().isBlank()){
+            if (!usuariosEntity.getTelefone().equals(user.getTelefone()) && !usuariosEntity.getTelefone().isBlank()){
                 user.setTelefone(usuariosEntity.getTelefone());
             }
 
