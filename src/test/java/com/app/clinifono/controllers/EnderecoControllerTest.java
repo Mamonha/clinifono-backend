@@ -3,130 +3,129 @@ package com.app.clinifono.controllers;
 import com.app.clinifono.dto.endereco.EnderecoUpdateDto;
 import com.app.clinifono.dto.endereco.ResponseEnderecoDto;
 import com.app.clinifono.entities.Endereco;
-import com.app.clinifono.mapper.EnderecoMapper;
-import com.app.clinifono.services.EnderecoService;
+import com.app.clinifono.entities.Paciente;
+import com.app.clinifono.repositories.EnderecoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
+@SpringBootTest
 class EnderecoControllerTest {
 
-    @Mock
-    private EnderecoService enderecoService;
+    @MockBean
+    private EnderecoRepository enderecoRepository;
 
-    @Mock
-    private EnderecoMapper enderecoMapper;
-
-    @InjectMocks
+    @Autowired
     private EnderecoController enderecoController;
+
+    private Endereco enderecoEntity;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        enderecoEntity = new Endereco(
+                1L,
+                "Rua das Flores",
+                "12345-678",
+                "Jardim das Palmeiras",
+                "SP",
+                "São Paulo",
+                "123",
+                new Paciente()
+        );
     }
 
     @Test
-    void testUpdateEndereco() {
-        EnderecoUpdateDto updateDto = new EnderecoUpdateDto(
-                "Rua Teste",
+    void testCreate() {
+        EnderecoUpdateDto enderecoUpdateDto = new EnderecoUpdateDto(
+                "Rua das Flores",
                 "12345-678",
-                "Bairro Teste",
-                "Estado Teste",
-                "Cidade Teste",
+                "Jardim das Palmeiras",
+                "São Paulo",
+                "São Paulo",
                 "123"
         );
-        Endereco endereco = new Endereco();
-        ResponseEnderecoDto responseDto = new ResponseEnderecoDto(
-                1L,
-                "Rua Teste",
-                "12345-678",
-                "Bairro Teste",
-                "Estado Teste",
-                "Cidade Teste",
-                "123"
-        );
-        when(enderecoService.update(anyLong(), any(Endereco.class))).thenReturn(endereco);
-        when(enderecoMapper.toUpdateEntity(updateDto)).thenReturn(endereco);
-        when(enderecoMapper.toDto(endereco)).thenReturn(responseDto);
-        ResponseEntity<ResponseEnderecoDto> response = enderecoController.update(1L, updateDto);
-        assertNotNull(response);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(responseDto, response.getBody());
-    }
 
-    @Test
-    void testCreateEndereco() {
-        EnderecoUpdateDto enderecoDto = new EnderecoUpdateDto(
-                "Rua Nova",
-                "12345-678",
-                "Bairro Novo",
-                "Estado Novo",
-                "Cidade Nova",
-                "456"
-        );
-        Endereco enderecoEntity = new Endereco();
-        ResponseEnderecoDto responseDto = new ResponseEnderecoDto(
-                1L,
-                "Rua Nova",
-                "12345-678",
-                "Bairro Novo",
-                "Estado Novo",
-                "Cidade Nova",
-                "456"
-        );
-        when(enderecoService.save(any(Endereco.class))).thenReturn(enderecoEntity);
-        when(enderecoMapper.toUpdateEntity(enderecoDto)).thenReturn(enderecoEntity);
-        when(enderecoMapper.toDto(enderecoEntity)).thenReturn(responseDto);
-        ResponseEntity<ResponseEnderecoDto> response = enderecoController.create(enderecoDto);
+        when(enderecoRepository.save(any(Endereco.class))).thenReturn(enderecoEntity);
+
+        ResponseEntity<ResponseEnderecoDto> response = enderecoController.create(enderecoUpdateDto);
+
         assertNotNull(response);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals(responseDto, response.getBody());
+        assertNotNull(response.getBody());
+        assertEquals(enderecoEntity.getNomeRua(), response.getBody().nomeRua());
+        verify(enderecoRepository, times(1)).save(any(Endereco.class));
     }
+
+    @Test
+    void testUpdate() {
+        EnderecoUpdateDto updateDto = new EnderecoUpdateDto(
+                "Rua Atualizada",
+                "98765-432",
+                "Bairro Atualizado",
+                "São Paulo",
+                "São Paulo",
+                "321"
+        );
+
+        when(enderecoRepository.findById(anyLong())).thenReturn(Optional.of(enderecoEntity));
+        when(enderecoRepository.save(any(Endereco.class))).thenReturn(enderecoEntity);
+
+        ResponseEntity<ResponseEnderecoDto> response = enderecoController.update(1L, updateDto);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(enderecoEntity.getNomeRua(), response.getBody().nomeRua());
+        verify(enderecoRepository, times(1)).findById(1L);
+        verify(enderecoRepository, times(1)).save(any(Endereco.class));
+    }
+
+//    @Test
+//    void testDelete() {
+//        doNothing().when(enderecoRepository).deleteById(anyLong());
+//
+//        ResponseEntity<Void> response = enderecoController.delete(1L);
+//
+//        assertEquals(HttpStatus.OK, response.getStatusCode());
+//        verify(enderecoRepository, times(1)).deleteById(1L);
+//    }
 
     @Test
     void testFindById() {
-        Endereco enderecoEntity = new Endereco();
-        ResponseEnderecoDto responseDto = new ResponseEnderecoDto(
-                1L,
-                "Rua Exemplo",
-                "12345-678",
-                "Bairro Exemplo",
-                "Estado Exemplo",
-                "Cidade Exemplo",
-                "789"
-        );
-        when(enderecoService.findById(1L)).thenReturn(enderecoEntity);
-        when(enderecoMapper.toDto(enderecoEntity)).thenReturn(responseDto);
+        when(enderecoRepository.findById(1L)).thenReturn(Optional.of(enderecoEntity));
+
         ResponseEntity<ResponseEnderecoDto> response = enderecoController.findById(1L);
-        assertNotNull(response);
+
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(responseDto, response.getBody());
+        assertNotNull(response.getBody());
+        assertEquals(enderecoEntity.getNomeRua(), response.getBody().nomeRua());
+        verify(enderecoRepository, times(1)).findById(1L);
     }
 
     @Test
-    void testFindAllEnderecos() {
-        List<Endereco> enderecos = List.of(new Endereco(), new Endereco());
-        List<ResponseEnderecoDto> responseDtos = List.of(
-                new ResponseEnderecoDto(1L, "Rua 1", "12345-678", "Bairro 1", "Estado 1", "Cidade 1", "1"),
-                new ResponseEnderecoDto(2L, "Rua 2", "98765-432", "Bairro 2", "Estado 2", "Cidade 2", "2")
-        );
-
-        when(enderecoService.findAll()).thenReturn(enderecos);
-        when(enderecoMapper.toDto(any(Endereco.class))).thenReturn(responseDtos.get(0), responseDtos.get(1));
+    void testFindAll() {
+        List<Endereco> enderecos = new ArrayList<>();
+        enderecos.add(enderecoEntity);
+        when(enderecoRepository.findAll()).thenReturn(enderecos);
 
         ResponseEntity<List<ResponseEnderecoDto>> response = enderecoController.findAll();
 
-        assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(2, response.getBody().size());
+        assertNotNull(response.getBody());
+        assertEquals(1, response.getBody().size());
+        assertEquals(enderecoEntity.getNomeRua(), response.getBody().get(0).nomeRua());
+        verify(enderecoRepository, times(1)).findAll();
     }
 }

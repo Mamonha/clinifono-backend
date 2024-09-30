@@ -1,6 +1,7 @@
 package com.app.clinifono.controllers;
 
 import com.app.clinifono.dto.usuario.*;
+import com.app.clinifono.entities.Paciente;
 import com.app.clinifono.entities.Usuarios;
 import com.app.clinifono.repositories.UsuariosRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,6 +12,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -27,12 +29,10 @@ class UsuarioControllerTest {
 
     @Autowired
     private UsuarioController usuarioController;
-    private Usuarios usuarioEntity = new Usuarios(1L, "Nome Teste", "teste@exemplo.com", "+55 11 91234-5678", "senha123", new ArrayList<>());
-
-
+    private Usuarios usuarioEntity ;
     @BeforeEach
     void setUp() {
-        // O contexto Spring é inicializado automaticamente pelo @SpringBootTest
+        usuarioEntity = new Usuarios(1L, "Nome Teste", "teste@exemplo.com", "+55 11 91234-5678", "senha123", new ArrayList<>());
     }
 
     @Test

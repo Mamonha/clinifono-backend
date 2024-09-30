@@ -2,6 +2,7 @@ package com.app.clinifono.dto.endereco;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import lombok.NoArgsConstructor;
 
 public record EnderecoDto (
         @NotBlank(message = "O nome da rua não pode estar em branco") String nomeRua,
