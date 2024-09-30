@@ -92,16 +92,6 @@ class EnderecoControllerTest {
         verify(enderecoRepository, times(1)).save(any(Endereco.class));
     }
 
-//    @Test
-//    void testDelete() {
-//        doNothing().when(enderecoRepository).deleteById(anyLong());
-//
-//        ResponseEntity<Void> response = enderecoController.delete(1L);
-//
-//        assertEquals(HttpStatus.OK, response.getStatusCode());
-//        verify(enderecoRepository, times(1)).deleteById(1L);
-//    }
-
     @Test
     void testFindById() {
         when(enderecoRepository.findById(1L)).thenReturn(Optional.of(enderecoEntity));

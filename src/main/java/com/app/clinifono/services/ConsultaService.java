@@ -2,8 +2,12 @@ package com.app.clinifono.services;
 
 import com.app.clinifono.configuration.exceptions.BusinessException;
 import com.app.clinifono.configuration.exceptions.EntityNotFoundException;
+import com.app.clinifono.dto.consulta.ConsultaDashboardDto;
+import com.app.clinifono.dto.consulta.ConsultasPorMesDto;
+import com.app.clinifono.dto.paciente.ConsultasPorPacienteDto;
 import com.app.clinifono.entities.Consulta;
 import com.app.clinifono.entities.Paciente;
+import com.app.clinifono.entities.Status;
 import com.app.clinifono.repositories.ConsultaRepository;
 import com.app.clinifono.repositories.PacienteRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ConsultaService {
@@ -142,5 +147,28 @@ public class ConsultaService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public ConsultaDashboardDto getDashboardData() {
+        long totalConsultas = consultaRepository.count();
+        long consultasConfirmadas = consultaRepository.countByStatus(Status.CONFIRMED);
+        long consultasPendentes = consultaRepository.countByStatus(Status.CANCELLED);
+        List<ConsultasPorPacienteDto> consultasPorPaciente = consultaRepository.findConsultasPorPaciente().stream()
+                .map(consulta -> new ConsultasPorPacienteDto(
+                        (String) consulta.get("paciente"),
+                        (long) consulta.get("totalConsultas")))
+                .collect(Collectors.toList());
+        List<ConsultasPorMesDto> consultasPorMes = consultaRepository.findConsultasPorMes().stream()
+                .map(consulta -> new ConsultasPorMesDto(
+                        (int) consulta.get("mes"),
+                        (long) consulta.get("totalConsultas")))
+                .collect(Collectors.toList());
+        return new ConsultaDashboardDto(
+                totalConsultas,
+                consultasConfirmadas,
+                consultasPendentes,
+                consultasPorPaciente,
+                consultasPorMes
+        );
     }
 }

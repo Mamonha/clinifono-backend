@@ -72,7 +72,7 @@ class UsuarioControllerTest {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertEquals("Nome Teste", response.getBody().nome());
+        assertEquals("Nome Atualizado", response.getBody().nome());
     }
 
     @Test

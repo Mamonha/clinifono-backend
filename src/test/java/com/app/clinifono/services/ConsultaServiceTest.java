@@ -1,9 +1,11 @@
 package com.app.clinifono.services;
 
 import com.app.clinifono.configuration.exceptions.BusinessException;
+import com.app.clinifono.dto.consulta.ConsultaDashboardDto;
 import com.app.clinifono.entities.Consulta;
 import com.app.clinifono.entities.Paciente;
 import com.app.clinifono.entities.Status;
+import com.app.clinifono.entities.Usuarios;
 import com.app.clinifono.repositories.ConsultaRepository;
 import com.app.clinifono.repositories.PacienteRepository;
 import org.junit.jupiter.api.Assertions;
@@ -23,6 +25,9 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 public class ConsultaServiceTest {
@@ -45,22 +50,24 @@ public class ConsultaServiceTest {
 
     @BeforeEach
     void setUp() {
+        Usuarios usuarios= new Usuarios();
+        usuarios.setId(1L);
         paciente = new Paciente(1L, "João Silva", "12345678900", LocalDate.of(1985, 5, 20), "(11) 98765-4321", null, null);
-        consulta = new Consulta(1L, LocalDate.of(2025, 9, 25), LocalTime.of(14, 0), LocalTime.of(15, 0), "Consulta de rotina", Status.PENDING, null, paciente);
-        outraConsulta = new Consulta(2L, LocalDate.of(2025, 9, 26), LocalTime.of(16, 0), LocalTime.of(17, 0), "Consulta de retorno", Status.CONFIRMED, null, paciente);
-        Mockito.when(pacienteRepository.findById(1L)).thenReturn(Optional.of(paciente));
-        Mockito.when(consultaRepository.save(ArgumentMatchers.any(Consulta.class))).thenReturn(consulta);
-        Mockito.when(consultaRepository.findById(1L)).thenReturn(Optional.of(consulta));
-        Mockito.when(consultaRepository.findById(2L)).thenReturn(Optional.of(outraConsulta));
-        Mockito.when(consultaRepository.findAll()).thenReturn(List.of(consulta, outraConsulta));
+        consulta = new Consulta(1L, LocalDate.of(2025, 9, 25), LocalTime.of(14, 0), LocalTime.of(15, 0), "Consulta de rotina", Status.PENDING, usuarios, paciente);
+        outraConsulta = new Consulta(2L, LocalDate.of(2025, 9, 26), LocalTime.of(16, 0), LocalTime.of(17, 0), "Consulta de retorno", Status.CONFIRMED, usuarios, paciente);
+        when(pacienteRepository.findById(1L)).thenReturn(Optional.of(paciente));
+        when(consultaRepository.save(ArgumentMatchers.any(Consulta.class))).thenReturn(consulta);
+        when(consultaRepository.findById(1L)).thenReturn(Optional.of(consulta));
+        when(consultaRepository.findById(2L)).thenReturn(Optional.of(outraConsulta));
+        when(consultaRepository.findAll()).thenReturn(List.of(consulta, outraConsulta));
     }
 
     @Test
     @DisplayName("Teste - Save")
     void cenario01() {
         var resultado = consultaService.save(consulta);
-        Assertions.assertEquals(consulta, resultado);
-        Assertions.assertEquals(consulta.getDescricao(), resultado.getDescricao());
+        assertEquals(consulta, resultado);
+        assertEquals(consulta.getDescricao(), resultado.getDescricao());
     }
 
     @Test
@@ -72,7 +79,7 @@ public class ConsultaServiceTest {
             consultaService.save(consulta);
         });
 
-        Assertions.assertEquals("A data é inválida", exception.getMessage());
+        assertEquals("A data é inválida", exception.getMessage());
     }
 
     @Test
@@ -86,7 +93,7 @@ public class ConsultaServiceTest {
             consultaService.save(consulta);
         });
 
-        Assertions.assertEquals("Hora de encerramento invalida", exception.getMessage());
+        assertEquals("Hora de encerramento invalida", exception.getMessage());
     }
 
     @Test
@@ -99,8 +106,8 @@ public class ConsultaServiceTest {
 
         var resultado = consultaService.update(consulta, 1L);
 
-        Assertions.assertEquals(1L, resultado.getId());
-        Assertions.assertEquals("Consulta atualizada", resultado.getDescricao());
+        assertEquals(1L, resultado.getId());
+        assertEquals("Consulta atualizada", resultado.getDescricao());
     }
 
     @Test
@@ -112,7 +119,7 @@ public class ConsultaServiceTest {
             consultaService.update(consulta, 1L);
         });
 
-        Assertions.assertEquals("A data é inválida", exception.getMessage());
+        assertEquals("A data é inválida", exception.getMessage());
     }
 
     @Test
@@ -121,7 +128,7 @@ public class ConsultaServiceTest {
         consulta.setStatus(Status.CONFIRMED);
 
         var resultado = consultaService.confirmarConsulta(consulta, 1L);
-        Assertions.assertEquals(Status.CONFIRMED, resultado.getStatus());
+        assertEquals(Status.CONFIRMED, resultado.getStatus());
     }
 
     @Test
@@ -132,23 +139,23 @@ public class ConsultaServiceTest {
             consultaService.confirmarConsulta(consulta, 1L);
         });
 
-        Assertions.assertEquals("Erro ao confirmar a consulta devido a má formatação do status", exception.getMessage());
+        assertEquals("Erro ao confirmar a consulta devido a má formatação do status", exception.getMessage());
     }
 
     @Test
     @DisplayName("Teste - FindById")
     void cenario08() {
         var resultado = consultaService.findById(1L);
-        Assertions.assertEquals(consulta, resultado);
+        assertEquals(consulta, resultado);
     }
 
     @Test
     @DisplayName("Teste - FindAll")
     void cenario09() {
         List<Consulta> consultas = consultaService.findAll();
-        Assertions.assertEquals(2, consultas.size());
-        Assertions.assertEquals("Consulta de rotina", consultas.get(0).getDescricao());
-        Assertions.assertEquals("Consulta de retorno", consultas.get(1).getDescricao());
+        assertEquals(2, consultas.size());
+        assertEquals("Consulta de rotina", consultas.get(0).getDescricao());
+        assertEquals("Consulta de retorno", consultas.get(1).getDescricao());
     }
 
     @Test
@@ -163,7 +170,7 @@ public class ConsultaServiceTest {
     void cenario11() throws Exception {
 
         String response = "Consulta enviada com sucesso!";
-        Mockito.when(restTemplate.postForObject(
+        when(restTemplate.postForObject(
                 Mockito.eq("http://localhost:8000/api/consultas"),
                 ArgumentMatchers.any(Map.class),
                 Mockito.eq(String.class))
@@ -176,13 +183,55 @@ public class ConsultaServiceTest {
                 .postForObject(Mockito.eq("http://localhost:8000/api/consultas"), requestCaptor.capture(), Mockito.eq(String.class));
 
         Map<String, Object> capturedRequestBody = requestCaptor.getValue();
-        Assertions.assertEquals(consulta.getId(), capturedRequestBody.get("consultaId"));
-        Assertions.assertEquals(paciente.getNome(), capturedRequestBody.get("pacienteNome"));
-        Assertions.assertEquals("11987654321", capturedRequestBody.get("telefone"));
-        Assertions.assertEquals(consulta.getDataAgendamento().toString(), capturedRequestBody.get("dataAgendamento"));
-        Assertions.assertEquals(consulta.getHoraDeInicio().toString(), capturedRequestBody.get("horaDeInicio"));
-        Assertions.assertEquals(consulta.getHoraDoFim().toString(), capturedRequestBody.get("horaDoFim"));
+        assertEquals(consulta.getId(), capturedRequestBody.get("consultaId"));
+        assertEquals(paciente.getNome(), capturedRequestBody.get("pacienteNome"));
+        assertEquals("11987654321", capturedRequestBody.get("telefone"));
+        assertEquals(consulta.getDataAgendamento().toString(), capturedRequestBody.get("dataAgendamento"));
+        assertEquals(consulta.getHoraDeInicio().toString(), capturedRequestBody.get("horaDeInicio"));
+        assertEquals(consulta.getHoraDoFim().toString(), capturedRequestBody.get("horaDoFim"));
 
-        Assertions.assertEquals("Consulta enviada com sucesso!", response);
+        assertEquals("Consulta enviada com sucesso!", response);
+    }
+
+    @Test
+    void testGetDashboardData() {
+        // Arrange
+        long totalConsultas = 20L;
+        long consultasConfirmadas = 10L;
+        long consultasCanceladas = 5L;
+
+        List<Map<String, Object>> consultasPorPacienteData = List.of(
+                Map.of("paciente", "Paciente A", "totalConsultas", 7L),
+                Map.of("paciente", "Paciente B", "totalConsultas", 3L)
+        );
+
+        List<Map<String, Object>> consultasPorMesData = List.of(
+                Map.of("mes", 1, "totalConsultas", 5L),
+                Map.of("mes", 2, "totalConsultas", 10L)
+        );
+
+        when(consultaRepository.count()).thenReturn(totalConsultas);
+        when(consultaRepository.countByStatus(Status.CONFIRMED)).thenReturn(consultasConfirmadas);
+        when(consultaRepository.countByStatus(Status.CANCELLED)).thenReturn(consultasCanceladas);
+        when(consultaRepository.findConsultasPorPaciente()).thenReturn(consultasPorPacienteData);
+        when(consultaRepository.findConsultasPorMes()).thenReturn(consultasPorMesData);
+
+        ConsultaDashboardDto dashboardData = consultaService.getDashboardData();
+
+        assertEquals(totalConsultas, dashboardData.totalConsultas());
+        assertEquals(consultasConfirmadas, dashboardData.consultasConfirmadas());
+        assertEquals(consultasCanceladas, dashboardData.consultasCanceladas());
+
+        assertEquals(2, dashboardData.consultasPorPaciente().size());
+        assertEquals("Paciente A", dashboardData.consultasPorPaciente().get(0).paciente());
+        assertEquals(7L, dashboardData.consultasPorPaciente().get(0).totalConsultas());
+        assertEquals("Paciente B", dashboardData.consultasPorPaciente().get(1).paciente());
+        assertEquals(3L, dashboardData.consultasPorPaciente().get(1).totalConsultas());
+
+        assertEquals(2, dashboardData.consultasPorMes().size());
+        assertEquals(1, dashboardData.consultasPorMes().get(0).mes());
+        assertEquals(5L, dashboardData.consultasPorMes().get(0).totalConsultas());
+        assertEquals(2, dashboardData.consultasPorMes().get(1).mes());
+        assertEquals(10L, dashboardData.consultasPorMes().get(1).totalConsultas());
     }
 }

@@ -107,11 +107,11 @@ class PacienteControllerTest {
     void testFindById() {
         when(pacienteRepository.findById(1L)).thenReturn(Optional.of(pacienteEntity));
 
-        ResponseEntity<Paciente> response = pacienteController.findById(1L);
+        ResponseEntity<ResponsePacienteDto> response = pacienteController.findById(1L);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertEquals("João Silva", response.getBody().getNome());
+        assertEquals("João Silva", response.getBody().nome());
     }
 
     @Test
@@ -119,10 +119,10 @@ class PacienteControllerTest {
         List<Paciente> pacientes = new ArrayList<>();
         pacientes.add(pacienteEntity);
         when(pacienteRepository.findAll()).thenReturn(pacientes);
-        ResponseEntity<List<Paciente>> response = pacienteController.findall();
+        ResponseEntity<List<ResponsePacienteDto>> response = pacienteController.findall();
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(1, response.getBody().size());
-        assertEquals("João Silva", response.getBody().get(0).getNome());
+        assertEquals("João Silva", response.getBody().get(0).nome());
     }
 }
