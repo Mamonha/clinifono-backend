@@ -66,6 +66,7 @@ public class UsuarioService {
         return list;
     }
 
+    @Transactional
     public void atualizarSenha( Long id,String senhaAtual, String novaSenha){
         var user = findById(id);
 
@@ -74,6 +75,18 @@ public class UsuarioService {
         }
         user.setSenha(novaSenha);
         usuariosRepository.save(user);
+    }
+
+    @Transactional(readOnly = true)
+    public Usuarios login(Usuarios usuario) {
+
+        var user = usuariosRepository.findByEmail(usuario.getEmail());
+        if(usuario.getSenha().equals(user.getSenha())){
+            return user;
+        } else {
+            throw new EntityNotFoundException("Email ou senha incorretos");
+        }
+
     }
 }
 

@@ -1,9 +1,6 @@
 package com.app.clinifono.controllers;
 
-import com.app.clinifono.dto.usuario.ResponseUsuarioDto;
-import com.app.clinifono.dto.usuario.UsuarioDto;
-import com.app.clinifono.dto.usuario.UsuarioSenhaUpdateDto;
-import com.app.clinifono.dto.usuario.UsuarioUpdateDto;
+import com.app.clinifono.dto.usuario.*;
 import com.app.clinifono.mapper.UserMapper;
 import com.app.clinifono.services.UsuarioService;
 import jakarta.validation.Valid;
@@ -53,5 +50,11 @@ public class UsuarioController {
     public ResponseEntity<List<ResponseUsuarioDto>> findAll() {
         var usuarios = usuarioService.findALl();
         return new ResponseEntity<>(usuarios.stream().map(userMapper::toDto).collect(Collectors.toList()), HttpStatus.OK);
+    }
+
+    @GetMapping("/login")
+    public ResponseEntity<ResponseUsuarioDto> login(@RequestBody LoginDto dto){
+        var user = usuarioService.login(userMapper.toLogin(dto));
+        return new ResponseEntity<>(userMapper.toDto(user) ,HttpStatus.OK);
     }
 }
