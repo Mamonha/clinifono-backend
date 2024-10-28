@@ -78,10 +78,9 @@ public class UsuarioService {
     }
 
     @Transactional(readOnly = true)
-    public Usuarios login(Usuarios usuario) {
-
-        var user = usuariosRepository.findByEmail(usuario.getEmail());
-        if(usuario.getSenha().equals(user.getSenha())){
+    public Usuarios login(Usuarios usuarios) {
+        var user = usuariosRepository.findByEmail(usuarios.getEmail());
+        if(usuarios.getSenha().equals(user.getSenha())){
             return user;
         } else {
             throw new EntityNotFoundException("Email ou senha incorretos");
