@@ -32,7 +32,7 @@ public class Paciente {
     private Endereco enderecos;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "paciente")
+    @OneToMany(mappedBy = "paciente", cascade = CascadeType.ALL)
     private List<Consulta> consultas;
 
 }
