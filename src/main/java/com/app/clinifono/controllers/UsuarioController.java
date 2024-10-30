@@ -53,9 +53,4 @@ public class UsuarioController {
         return new ResponseEntity<>(usuarios.stream().map(userMapper::toDto).collect(Collectors.toList()), HttpStatus.OK);
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<ResponseUsuarioDto> login(@RequestBody @Valid LoginDto dto){
-        var user = usuarioService.login(userMapper.toLogin(dto));
-        return new ResponseEntity<>(userMapper.toDto(user) ,HttpStatus.OK);
-    }
 }
