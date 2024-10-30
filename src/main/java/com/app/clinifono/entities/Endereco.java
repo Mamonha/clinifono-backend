@@ -23,7 +23,7 @@ public class Endereco {
     private String cidade;
     private String numeroDaCasa;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "paciente_id")
     private Paciente paciente;
 }

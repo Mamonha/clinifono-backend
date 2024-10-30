@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/enderecos")
+@RequestMapping("/enderecos")
+@CrossOrigin("*")
 public class EnderecoController {
 
     @Autowired

@@ -49,8 +49,8 @@ public class PacienteService {
                 pacient.setTelefone(paciente.getTelefone());
             }
 
-
-            return pacienteRepository.save(paciente);
+            pacient.setId(id);
+            return pacienteRepository.save(pacient);
         } catch (DataIntegrityViolationException ex){
             throw new UniqueValueException("Cpf já cadastrado!");
         }
