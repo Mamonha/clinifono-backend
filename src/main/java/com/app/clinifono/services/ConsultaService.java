@@ -56,7 +56,6 @@ public class ConsultaService {
         var paciente = pacienteService.findById(consulta.getPaciente().getId());
         consulta.setUsuario(user);
         consulta.setPaciente(paciente);
-
         if(!consulta.getDataAgendamento().isAfter(LocalDate.now())){
             throw new BusinessException("A data é inválida");
         }
@@ -69,7 +68,6 @@ public class ConsultaService {
     @Transactional
     public Consulta update(Consulta consulta, Long id){
         var update = findById(id);
-
         if(!consulta.getDataAgendamento().isAfter(LocalDate.now())){
             throw new BusinessException("A data é inválida");
         }
@@ -90,6 +88,9 @@ public class ConsultaService {
         }
         if(!consulta.getDescricao().isBlank() && consulta.getDescricao() != null) {
             update.setDescricao(consulta.getDescricao());
+        }
+        if (consulta.getStatus() != null){
+            update.setStatus(consulta.getStatus());
         }
         return consultaRepository.save(update);
     }
