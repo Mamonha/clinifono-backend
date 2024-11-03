@@ -28,7 +28,7 @@ public class Consulta {
     private String descricao;
 
     @Enumerated(EnumType.STRING)
-    private Status status = Status.PENDING;
+    private Status status;
 
     @ManyToOne
     @JsonBackReference
