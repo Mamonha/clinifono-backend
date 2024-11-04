@@ -14,6 +14,7 @@ public interface PacienteMapper {
     @Mapping(source = "dataDeNascimento", target = "dataNascimento")
     Paciente toEntity (PacienteDto dto);
     @Mapping(source = "enderecos", target = "endereco")
+    @Mapping(source = "dataNascimento", target = "dataDeNascimento")
     ResponsePacienteDto toDto (Paciente paciente);
     @Mapping(source = "dataDeNascimento", target = "dataNascimento")
     Paciente toUpdateEntity (PacienteUpdateDto dto);
