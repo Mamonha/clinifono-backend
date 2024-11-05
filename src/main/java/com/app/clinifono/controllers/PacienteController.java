@@ -17,7 +17,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/paciente")
 @CrossOrigin("*")
-public class    PacienteController {
+public class PacienteController {
+
 
     @Autowired
     private PacienteService pacienteService;
@@ -56,7 +57,6 @@ public class    PacienteController {
     @GetMapping("/findall")
     public ResponseEntity<List<ResponsePacienteDto>> findall(){
         List<Paciente> pacientes = pacienteService.findAll();
-
         return new ResponseEntity<>(pacientes.stream().map(pacienteMapper::toDto).toList(),HttpStatus.OK);
     }
 
