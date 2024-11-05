@@ -52,6 +52,7 @@ public class ConsultaService {
         var paciente = pacienteService.findById(consulta.getPaciente().getId());
         consulta.setUsuario(user);
         consulta.setPaciente(paciente);
+        consulta.setStatus(Status.PENDING);
         System.out.println("hora de agora " + LocalDateTime.now());
         System.out.println("ta chegando; " + consulta.getDataAgendamento());
         if(consulta.getDataAgendamento().isBefore(LocalDate.now())){
