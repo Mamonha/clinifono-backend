@@ -5,6 +5,7 @@ import com.app.clinifono.entities.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -19,4 +20,6 @@ public interface ConsultaRepository extends JpaRepository<Consulta, Long> {
     @Query("SELECT new map(MONTH(c.dataAgendamento) as mes, COUNT(c) as totalConsultas) " +
             "FROM Consulta c GROUP BY MONTH(c.dataAgendamento)")
     List<Map<String, Object>> findConsultasPorMes();
+
+    int countByDataConsultaBetween(LocalDate inicio, LocalDate fim);
 }

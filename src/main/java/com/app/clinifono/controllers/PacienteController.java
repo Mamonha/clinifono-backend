@@ -16,13 +16,19 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/paciente")
-public class PacienteController {
+@CrossOrigin("*")
+public class    PacienteController {
 
     @Autowired
     private PacienteService pacienteService;
 
     @Autowired
     private PacienteMapper pacienteMapper;
+
+    @GetMapping("/totalpormes")
+    public List<Integer> obterTotalPacientesPorMes() {
+        return pacienteService.contarPacientesPorMes();
+    }
 
     @PostMapping("/create")
     public ResponseEntity<ResponsePacienteDto> create(@RequestBody @Valid PacienteDto dto){

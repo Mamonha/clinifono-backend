@@ -14,20 +14,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.MediaType;
+import org.springframework.cglib.core.Local;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.http.HttpHeaders;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -56,7 +52,9 @@ public class ConsultaService {
         var paciente = pacienteService.findById(consulta.getPaciente().getId());
         consulta.setUsuario(user);
         consulta.setPaciente(paciente);
-        if(!consulta.getDataAgendamento().isAfter(LocalDate.now())){
+        System.out.println("hora de agora " + LocalDateTime.now());
+        System.out.println("ta chegando; " + consulta.getDataAgendamento());
+        if(consulta.getDataAgendamento().isBefore(LocalDate.now())){
             throw new BusinessException("A data é inválida");
         }
         if(consulta.getHoraDeInicio().isAfter(consulta.getHoraDoFim())) {
@@ -65,10 +63,22 @@ public class ConsultaService {
         return consultaRepository.save(consulta);
     }
 
+    public List<Integer> contarConsultasPorMes() {
+        List<Integer> totaisPorMes = new ArrayList<>();
+        for (int month = 1; month <= 12; month++) {
+            LocalDate inicio = LocalDate.of(LocalDate.now().getYear(), Month.of(month), 1);
+            LocalDate fim = inicio.plusMonths(1).minusDays(1);
+            int total = consultaRepository.countByDataConsultaBetween(inicio, fim);
+            totaisPorMes.add(total);
+            System.out.println("total por mes: " + totaisPorMes);
+        }
+        return totaisPorMes;
+    }
+
     @Transactional
     public Consulta update(Consulta consulta, Long id){
         var update = findById(id);
-        if(!consulta.getDataAgendamento().isAfter(LocalDate.now())){
+        if(consulta.getDataAgendamento().isBefore(LocalDate.now())){
             throw new BusinessException("A data é inválida");
         }
         if(consulta.getHoraDeInicio().isAfter(consulta.getHoraDoFim())) {

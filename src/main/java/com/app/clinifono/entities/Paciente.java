@@ -24,8 +24,10 @@ public class Paciente {
     private String nome;
     @Column(unique = true)
     private String cpf;
+    @Column(name = "data_nascimento")
     private LocalDate dataNascimento;
     private String telefone;
+    private LocalDate dataCadastro = LocalDate.now();
 
 
     @OneToOne(mappedBy = "paciente", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
