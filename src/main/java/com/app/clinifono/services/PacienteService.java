@@ -10,6 +10,9 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -32,6 +35,18 @@ public class PacienteService {
             throw new UniqueValueException("Cpf já cadastrado");
         }
 
+    }
+
+    public List<Integer> contarPacientesPorMes() {
+        List<Integer> totaisPorMes = new ArrayList<>();
+        for (int month = 1; month <= 12; month++) {
+            LocalDate inicio = LocalDate.of(LocalDate.now().getYear(), Month.of(month), 1);
+            LocalDate fim = inicio.plusMonths(1).minusDays(1);
+            int total = pacienteRepository.countByDataCadastroBetween(inicio, fim);
+            totaisPorMes.add(total);
+            System.out.println("total paciente mes:" + totaisPorMes);
+        }
+        return totaisPorMes;
     }
 
     @Transactional

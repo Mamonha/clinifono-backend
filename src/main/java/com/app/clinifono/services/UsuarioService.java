@@ -2,6 +2,7 @@ package com.app.clinifono.services;
 
 import com.app.clinifono.configuration.exceptions.EntityNotFoundException;
 import com.app.clinifono.configuration.exceptions.PasswordMissmatchException;
+import com.app.clinifono.configuration.exceptions.UnauthorizedException;
 import com.app.clinifono.configuration.exceptions.UniqueValueException;
 import com.app.clinifono.entities.Usuarios;
 import com.app.clinifono.repositories.UsuariosRepository;
