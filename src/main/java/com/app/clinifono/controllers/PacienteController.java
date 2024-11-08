@@ -16,14 +16,19 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/paciente")
-@CrossOrigin("*")
 public class PacienteController {
+
 
     @Autowired
     private PacienteService pacienteService;
 
     @Autowired
     private PacienteMapper pacienteMapper;
+
+    @GetMapping("/totalpormes")
+    public List<Integer> obterTotalPacientesPorMes() {
+        return pacienteService.contarPacientesPorMes();
+    }
 
     @PostMapping("/create")
     public ResponseEntity<ResponsePacienteDto> create(@RequestBody @Valid PacienteDto dto){
@@ -51,7 +56,6 @@ public class PacienteController {
     @GetMapping("/findall")
     public ResponseEntity<List<ResponsePacienteDto>> findall(){
         List<Paciente> pacientes = pacienteService.findAll();
-
         return new ResponseEntity<>(pacientes.stream().map(pacienteMapper::toDto).toList(),HttpStatus.OK);
     }
 

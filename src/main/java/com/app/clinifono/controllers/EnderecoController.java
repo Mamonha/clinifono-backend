@@ -15,7 +15,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/enderecos")
-@CrossOrigin("*")
 public class EnderecoController {
 
     @Autowired

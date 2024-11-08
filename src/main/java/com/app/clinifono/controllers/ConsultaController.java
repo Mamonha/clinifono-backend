@@ -1,8 +1,6 @@
 package com.app.clinifono.controllers;
 
 import com.app.clinifono.dto.consulta.*;
-import com.app.clinifono.entities.Consulta;
-import com.app.clinifono.entities.Paciente;
 import com.app.clinifono.mapper.ConsultaMapper;
 import com.app.clinifono.services.ConsultaService;
 import jakarta.validation.Valid;
@@ -12,11 +10,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/consulta")
-@CrossOrigin("*")
 public class ConsultaController {
 
     @Autowired
@@ -24,6 +22,11 @@ public class ConsultaController {
 
     @Autowired
     private ConsultaMapper consultaMapper;
+
+    @GetMapping("/totalpormes")
+    public List<Integer> obterTotalConsultasPorMes() {
+        return consultaService.contarConsultasPorMes();
+    }
 
     @PostMapping("/create")
     public ResponseEntity<ResponseConsultaDto> create(@RequestBody ConsultaDto dto){

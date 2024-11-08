@@ -26,9 +26,10 @@ public class Consulta {
     private LocalTime horaDeInicio;
     private LocalTime horaDoFim;
     private String descricao;
+    private LocalDate dataConsulta = LocalDate.now();
 
     @Enumerated(EnumType.STRING)
-    private Status status = Status.PENDING;
+    private Status status;
 
     @ManyToOne
     @JsonBackReference
