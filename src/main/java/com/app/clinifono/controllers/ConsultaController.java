@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/consulta")
+@CrossOrigin("*")
 public class ConsultaController {
 
     @Autowired
