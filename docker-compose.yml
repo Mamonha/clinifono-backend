@@ -1,0 +1,18 @@
+version: '3.9'
+
+services:
+  mysql:
+    build: .
+    container_name: mysql_local
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: clinifono
+      MYSQL_USER: user
+      MYSQL_PASSWORD: root
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
