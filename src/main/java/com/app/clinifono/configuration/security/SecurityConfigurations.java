@@ -25,7 +25,6 @@ public class SecurityConfigurations {
     @Autowired
     private SecurityFilter securityFilter;
 
-    // CORS configuration (replace with your allowed origins and methods)
     private CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of("http://localhost:4200")); // Replace with your allowed origins
@@ -42,7 +41,7 @@ public class SecurityConfigurations {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(req -> {
-                    req.requestMatchers("/api/login").permitAll();
+                    req.requestMatchers("/api/login", "/api/usuarios/save").permitAll();
                     req.anyRequest().authenticated();
                 })
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
