@@ -8,6 +8,8 @@ import com.app.clinifono.entities.Usuarios;
 import com.app.clinifono.repositories.UsuariosRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,9 +21,14 @@ public class UsuarioService {
     @Autowired
     private UsuariosRepository usuariosRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Transactional
     public Usuarios create(Usuarios usuariosEntity){
         try {
+            String hashedPassword = passwordEncoder.encode(usuariosEntity.getSenha());
+            usuariosEntity.setSenha(hashedPassword);
             return this.usuariosRepository.save(usuariosEntity);
         } catch (DataIntegrityViolationException ex){
             throw new UniqueValueException("Email ou Numero de telefone já cadastrados");
@@ -78,16 +85,5 @@ public class UsuarioService {
         usuariosRepository.save(user);
     }
 
-    @Transactional(readOnly = true)
-    public Usuarios login(Usuarios usuarios) {
-
-            var user = usuariosRepository.findByEmail(usuarios.getEmail());
-            if (usuarios.getSenha().equals(user.getSenha())) {
-                return user;
-            } else {
-                throw new UnauthorizedException("Email ou senha incorretos");
-            }
-
-    }
 }
 
