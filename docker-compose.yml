@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   mysql:
-    build: .
+    image: mysql:8.0
     container_name: mysql_local
     ports:
       - "3306:3306"
@@ -13,6 +13,31 @@ services:
       MYSQL_PASSWORD: root
     volumes:
       - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: spring_app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx_proxy
+    ports:
+      - "80:80"
+    depends_on:
+      - app
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
 
 volumes:
   mysql_data:
