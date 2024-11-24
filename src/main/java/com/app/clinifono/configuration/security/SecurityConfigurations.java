@@ -27,7 +27,7 @@ public class SecurityConfigurations {
 
     private CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:4200")); // Replace with your allowed origins
+        config.setAllowedOrigins(List.of("https://clinifono-ashy.vercel.app")); // Replace with your allowed origins
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE")); // Replace with allowed methods
         config.setAllowedHeaders(List.of("Content-Type", "Authorization")); // Replace with allowed headers
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
