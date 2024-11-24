@@ -30,6 +30,7 @@ public class SecurityConfigurations {
         config.setAllowedOrigins(List.of("https://clinifono-ashy.vercel.app")); // Replace with your allowed origins
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE")); // Replace with allowed methods
         config.setAllowedHeaders(List.of("Content-Type", "Authorization")); // Replace with allowed headers
+        config.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
