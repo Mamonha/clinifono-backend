@@ -54,14 +54,20 @@ public class PacienteService {
         try {
             var pacient = findById(id);
 
-            if (paciente.getNome().equals(pacient.getNome()) && !paciente.getNome().isBlank()){
+            if (paciente.getNome() != null && !paciente.getNome().isBlank()) {
                 pacient.setNome(paciente.getNome());
             }
-            if (paciente.getCpf().equals(pacient.getCpf()) && !paciente.getCpf().isBlank()){
-                pacient.setNome(paciente.getNome());
+
+            if (paciente.getCpf() != null && !paciente.getCpf().isBlank()) {
+                pacient.setCpf(paciente.getCpf());
             }
-            if (paciente.getTelefone().equals(pacient.getTelefone()) && !paciente.getTelefone().isBlank()){
+
+            if (paciente.getTelefone() != null && !paciente.getTelefone().isBlank()) {
                 pacient.setTelefone(paciente.getTelefone());
+            }
+
+            if (paciente.getDataNascimento() != null) {
+                pacient.setDataNascimento(paciente.getDataNascimento());
             }
 
             pacient.setId(id);
