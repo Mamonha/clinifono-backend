@@ -31,6 +31,8 @@ public class Usuarios implements UserDetails {
     private String telefone;
     private String senha;
 
+
+
     @JsonManagedReference
     @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
     private List<Consulta> consultas;
