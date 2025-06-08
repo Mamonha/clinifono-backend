@@ -1,0 +1,32 @@
+filebeat.inputs:
+  - type: log
+    enabled: true
+    paths:
+      - /usr/local/tomcat/logs/catalina.*.log
+      - /usr/local/tomcat/logs/localhost.*.log
+      - /usr/local/tomcat/logs/manager.*.log
+      - /usr/local/tomcat/logs/host-manager.*.log
+
+    tags: ["tomcat", "clinifono-backend"]
+
+    # Não precisa da pra tirar
+    multiline.pattern: '^\d{2}-[A-Za-z]{3}-\d{4}' 
+    multiline.negate: true
+    multiline.match: after
+
+    fields:
+      service: clinifono-backend
+      env: production
+
+output.elasticsearch:
+  hosts: ["http://host.docker.internal:9200"] # Devera ser adicionado o ip da maquina do front
+  username: "elastic"
+  password: "changeme"
+
+setup.kibana:
+  host: "http://host.docker.internal:5601" #Devera ser adicionado o ip da maquina do front
+
+setup.template.name: "clinifono-backend"
+setup.template.pattern: "clinifono-backend-*"
+
+output.elasticsearch.index: "clinifono-backend-%{+yyyy.MM.dd}"
