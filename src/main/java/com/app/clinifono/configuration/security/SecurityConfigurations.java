@@ -51,7 +51,7 @@ public class SecurityConfigurations {
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/api/login", "/api/refresh").permitAll();
                     auth.requestMatchers("/api/enderecos/**").hasAnyAuthority("MAMONHA");
-                    auth.requestMatchers("/api/consultas/**").hasAnyAuthority("MAMONHA");
+                    auth.requestMatchers("/api/consulta/**").hasAnyAuthority("MAMONHA");
                     auth.requestMatchers("/api/paciente/**").hasAnyAuthority("MAMONHA");
                     auth.requestMatchers("/api/usuarios/**").hasAnyAuthority("MAMONHA");
                     auth.requestMatchers("/api/admin").hasAnyAuthority("ADMIN");
