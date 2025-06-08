@@ -1,18 +1,18 @@
 FROM maven:3.8-openjdk-17 AS build
 WORKDIR /app
 COPY . .
-RUN mvn clean package -Dmaven.test.skip=true
+RUN mvn clean package -DskipTests
 
-FROM openjdk:17-jdk-slim AS app
-WORKDIR /app
+FROM tomcat:9.0-jdk17-temurin
 
-COPY --from=build /app/target/*.jar app.jar
+RUN rm -rf /usr/local/tomcat/webapps/*
 
-RUN apt-get update && apt-get install -y nginx && \
-    rm -rf /var/lib/apt/lists/*
+COPY --from=build /app/target/*.war /usr/local/tomcat/webapps/clinifono-0.0.1-SNAPSHOT.war
 
-COPY nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY tomcat/conf/server.xml /usr/local/tomcat/conf/server.xml
 
-EXPOSE 80 8080
+COPY certificado.jks /etc/ssl/CA/certificado.jks
 
-CMD service nginx start && java -jar app.jar
+EXPOSE 8443 8080
+
+CMD ["catalina.sh", "run"]
