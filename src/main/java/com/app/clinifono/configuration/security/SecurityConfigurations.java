@@ -49,7 +49,7 @@ public class SecurityConfigurations {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/api/login", "/api/refresh").permitAll();
+                    auth.requestMatchers("/api/login", "/api/refresh", "/api/reports/**").permitAll();
                     auth.requestMatchers("/api/enderecos/**").hasAnyAuthority("MAMONHA");
                     auth.requestMatchers("/api/consulta/**").hasAnyAuthority("MAMONHA");
                     auth.requestMatchers("/api/paciente/**").hasAnyAuthority("MAMONHA");
