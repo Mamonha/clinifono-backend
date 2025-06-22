@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -91,20 +92,20 @@ public class UsuarioService {
     @Transactional(readOnly = true)
     public List<AuditReportDto> getAuditReport() {
         List<Object[]> auditData = usuariosRepository.findAllAuditData();
-        
+
         return auditData.stream()
-            .map(row -> new AuditReportDto(
-                (String) row[0], // tabela
-                (Long) row[1],   // id
-                (String) row[2], // nome
-                (String) row[3], // email
-                (String) row[4], // telefone
-                (LocalDateTime) row[5], // dataCriacao
-                (LocalDateTime) row[6], // dataModificacao
-                (String) row[7], // criadoPor
-                (String) row[8]  // modificadoPor
-            ))
-            .collect(Collectors.toList());
+                .map(row -> new AuditReportDto(
+                        (String) row[0], // tabela
+                        ((Number) row[1]).longValue(),   // id (cast seguro para Long)
+                        (String) row[2], // nome
+                        (String) row[3], // email
+                        (String) row[4], // telefone
+                        ((Timestamp) row[5]).toLocalDateTime(), // dataCriacao
+                        ((Timestamp) row[6]).toLocalDateTime(), // dataModificacao
+                        (String) row[7], // criadoPor
+                        (String) row[8]  // modificadoPor
+                ))
+                .collect(Collectors.toList());
     }
 
 }
