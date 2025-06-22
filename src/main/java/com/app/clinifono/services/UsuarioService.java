@@ -96,12 +96,12 @@ public class UsuarioService {
         return auditData.stream()
                 .map(row -> new AuditReportDto(
                         (String) row[0], // tabela
-                        ((Number) row[1]).longValue(),   // id (cast seguro para Long)
+                        ((Number) row[1]).longValue(), // id
                         (String) row[2], // nome
                         (String) row[3], // email
                         (String) row[4], // telefone
-                        ((Timestamp) row[5]).toLocalDateTime(), // dataCriacao
-                        ((Timestamp) row[6]).toLocalDateTime(), // dataModificacao
+                        row[5] != null ? ((Timestamp) row[5]).toLocalDateTime() : null, // dataCriacao
+                        row[6] != null ? ((Timestamp) row[6]).toLocalDateTime() : null, // dataModificacao
                         (String) row[7], // criadoPor
                         (String) row[8]  // modificadoPor
                 ))
