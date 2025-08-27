@@ -9,12 +9,13 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/enderecos")
+@RequestMapping("/api/enderecos")
 public class EnderecoController {
 
     @Autowired
@@ -22,25 +23,25 @@ public class EnderecoController {
 
     @Autowired
     private EnderecoMapper enderecoMapper;
-
+    @PreAuthorize("hasAuthority('MAMONHA')")
     @PutMapping("/update/{id}")
     public ResponseEntity<ResponseEnderecoDto> update(@PathVariable Long id, @RequestBody @Valid EnderecoUpdateDto dto) {
         Endereco endereco = enderecoService.update(id, enderecoMapper.toUpdateEntity(dto));
         return new ResponseEntity<>(enderecoMapper.toDto(endereco), HttpStatus.OK);
     }
-
+    @PreAuthorize("hasAuthority('MAMONHA')")
     @PostMapping("/create")
     public ResponseEntity<ResponseEnderecoDto> create(@RequestBody @Valid EnderecoUpdateDto dto) {
         Endereco endereco = enderecoService.save(enderecoMapper.toUpdateEntity(dto));
         return new ResponseEntity<>(enderecoMapper.toDto(endereco), HttpStatus.CREATED);
     }
-
+    @PreAuthorize("hasAuthority('MAMONHA')")
     @GetMapping("/findbyid/{id}")
     public ResponseEntity<ResponseEnderecoDto> findById(@PathVariable Long id) {
         Endereco endereco = enderecoService.findById(id);
         return new ResponseEntity<>(enderecoMapper.toDto(endereco), HttpStatus.OK);
     }
-
+    @PreAuthorize("hasAuthority('MAMONHA')")
     @GetMapping("/findall")
     public ResponseEntity<List<ResponseEnderecoDto>> findAll() {
         List<Endereco> enderecos = enderecoService.findAll();

@@ -8,6 +8,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-//TODO verificar se esta correto passar List<Endereco> e List<Consulta>
-public record ResponsePacienteDto(Long id, String nome, String cpf, LocalDate dataDeNascimento, String telefone, ResponseEnderecoDto endereco) {
+
+public record ResponsePacienteDto(Long id, String nome, String cpf, LocalDate dataDeNascimento, String telefone, ResponseEnderecoDto endereco,
+                                  LocalDateTime createdAt,
+                                  LocalDateTime updatedAt,
+                                  String createdBy,
+                                  String modifiedby) {
 }

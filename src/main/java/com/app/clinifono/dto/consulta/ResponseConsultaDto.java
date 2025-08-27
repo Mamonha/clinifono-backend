@@ -5,6 +5,7 @@ import com.app.clinifono.dto.usuario.ResponseUsuarioDto;
 import com.app.clinifono.entities.Paciente;
 import com.app.clinifono.entities.Status;
 import com.app.clinifono.entities.Usuarios;
+import org.hibernate.validator.internal.util.privilegedactions.LoadClass;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -17,5 +18,10 @@ public record ResponseConsultaDto(
         String descricao,
         Status status,
         ResponseUsuarioDto usuario,
-        ResponsePacienteDto paciente) {
+        ResponsePacienteDto paciente,
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt,
+        String createdBy,
+        String modifiedby
+        ) {
 }

@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,35 +25,35 @@ public class PacienteController {
 
     @Autowired
     private PacienteMapper pacienteMapper;
-
+    @PreAuthorize("hasAuthority('MAMONHA')")
     @GetMapping("/totalpormes")
     public List<Integer> obterTotalPacientesPorMes() {
         return pacienteService.contarPacientesPorMes();
     }
-
+    @PreAuthorize("hasAuthority('MAMONHA')")
     @PostMapping("/create")
     public ResponseEntity<ResponsePacienteDto> create(@RequestBody @Valid PacienteDto dto){
         var paciente = pacienteService.save(pacienteMapper.toEntity(dto));
         return new ResponseEntity<>( pacienteMapper.toDto(paciente), HttpStatus.CREATED);
     }
-
+    @PreAuthorize("hasAuthority('MAMONHA')")
     @PutMapping("/update/{id}")
     public ResponseEntity<ResponsePacienteDto> update( @PathVariable Long id, @Valid @RequestBody PacienteUpdateDto dto ){
         var paciente = pacienteService.update(pacienteMapper.toUpdateEntity(dto), id);
         return new ResponseEntity<>(pacienteMapper.toDto(paciente), HttpStatus.OK);
     }
-
+    @PreAuthorize("hasAuthority('MAMONHA')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         pacienteService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
+    @PreAuthorize("hasAuthority('MAMONHA')")
     @GetMapping("/findbyid/{id}")
     public ResponseEntity<ResponsePacienteDto> findById(@PathVariable Long id){
         return new ResponseEntity<>(pacienteMapper.toDto(pacienteService.findById(id)),HttpStatus.OK);
     }
-
+    @PreAuthorize("hasAuthority('MAMONHA')")
     @GetMapping("/findall")
     public ResponseEntity<List<ResponsePacienteDto>> findall(){
         List<Paciente> pacientes = pacienteService.findAll();

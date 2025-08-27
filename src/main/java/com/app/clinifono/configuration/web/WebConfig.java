@@ -15,8 +15,8 @@ public class WebConfig  {
            @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**") // Permite CORS em todas as rotas
-                        .allowedOrigins("https://clinifono-ashy.vercel.app") // Domínio da Vercel
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Métodos HTTP permitidos
+                        .allowedOrigins("http://localhost:4200") // Domínio da Vercel
+                        .allowedMethods("*") // Métodos HTTP permitidos
                         .allowedHeaders("*") // Permite todos os cabeçalhos
                         .allowCredentials(true); // Permite cookies e credenciais
             }

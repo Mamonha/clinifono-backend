@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,19 +22,19 @@ public class UsuarioController {
 
     @Autowired
     private UserMapper userMapper;
-
+    @PreAuthorize("hasAuthority('MAMONHA')")
     @PostMapping("/save")
     public ResponseEntity<ResponseUsuarioDto> save(@RequestBody @Valid UsuarioDto dto){
         var obj = usuarioService.create(userMapper.toEntity(dto));
         return new ResponseEntity<>(userMapper.toDto(obj), HttpStatus.CREATED);
     }
-
+    @PreAuthorize("hasAuthority('MAMONHA')")
     @PutMapping("/senha/{id}")
     public ResponseEntity<Void> updatePassword(@Valid @RequestBody UsuarioSenhaUpdateDto dto, @PathVariable Long id){
         usuarioService.atualizarSenha(id, dto.senhaAtual(), dto.novaSenha());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
+    @PreAuthorize("hasAuthority('MAMONHA')")
     @PutMapping("/update/{id}")
     public ResponseEntity<ResponseUsuarioDto> update(@PathVariable Long id,@RequestBody @Valid UsuarioUpdateDto dto) {
         var user = usuarioService.update(userMapper.updateDto(dto), id);
@@ -45,7 +46,7 @@ public class UsuarioController {
         var user = usuarioService.findById(id);
         return new ResponseEntity<>(userMapper.toDto(user), HttpStatus.OK);
     }
-
+    @PreAuthorize("hasAuthority('MAMONHA')")
     @GetMapping("/findall")
     public ResponseEntity<List<ResponseUsuarioDto>> findAll() {
         var usuarios = usuarioService.findALl();
